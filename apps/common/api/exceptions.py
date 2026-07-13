@@ -17,10 +17,7 @@ def custom_exception_handler(exc, context) -> Response | None:
         errors = {"non_field_errors": errors}
 
     detail = errors.get("detail") if isinstance(errors, dict) else None
-    if detail is not None and len(errors) == 1:
-        message = str(detail)
-    else:
-        message = "Validation failed."
+    message = str(detail) if detail is not None and len(errors) == 1 else "Validation failed."
 
     response.data = {"success": False, "message": message, "errors": errors}
     return response

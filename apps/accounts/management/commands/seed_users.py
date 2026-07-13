@@ -62,9 +62,7 @@ class Command(BaseCommand):
     ) -> None:
         existing = get_user_by_email(email=email)
         if existing is not None and not reset_password:
-            self.stdout.write(
-                self.style.WARNING(f"Skipped {label} — {email} already exists.")
-            )
+            self.stdout.write(self.style.WARNING(f"Skipped {label} — {email} already exists."))
             return
 
         password = self._resolve_password(label=label, password_env=password_env)
@@ -72,14 +70,10 @@ class Command(BaseCommand):
         if existing is not None:
             existing.set_password(password)
             existing.save(update_fields=["password"])
-            self.stdout.write(
-                self.style.SUCCESS(f"Reset password for {label} — {email}")
-            )
+            self.stdout.write(self.style.SUCCESS(f"Reset password for {label} — {email}"))
             return
 
-        create_fn(
-            email=email, password=password, first_name=first_name, last_name=last_name
-        )
+        create_fn(email=email, password=password, first_name=first_name, last_name=last_name)
         self.stdout.write(self.style.SUCCESS(f"Created {label} — {email}"))
 
     def _resolve_password(self, *, label: str, password_env: str) -> str:

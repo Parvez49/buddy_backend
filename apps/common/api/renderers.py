@@ -10,11 +10,7 @@ class EnvelopeJSONRenderer(JSONRenderer):
         status_code = getattr(response, "status_code", 200)
         success = status_code < 400
 
-        if (
-            data is not None
-            and "success" in data
-            and ("data" in data or "errors" in data)
-        ):
+        if data is not None and "success" in data and ("data" in data or "errors" in data):
             # Already enveloped (e.g. by the custom exception handler) — pass through.
             envelope = data
         elif success:

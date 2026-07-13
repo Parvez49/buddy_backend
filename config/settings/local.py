@@ -3,9 +3,7 @@ from .base import *
 # https://docs.djangoproject.com/en/dev/ref/settings/
 DEBUG = env.bool("DJANGO_DEBUG", True)
 SECRET_KEY = env("DJANGO_SECRET_KEY", default="my-secret-key")
-ALLOWED_HOSTS = env.list(
-    "DJANGO_ALLOWED_HOSTS", default=["*", "localhost", "0.0.0.0", "127.0.0.1"]
-)
+ALLOWED_HOSTS = env.list("DJANGO_ALLOWED_HOSTS", default=["*", "localhost", "0.0.0.0", "127.0.0.1"])
 
 # Base URL for building absolute media URLs in local development.
 # Override via SITE_URL env var or change the port to match your runserver port.

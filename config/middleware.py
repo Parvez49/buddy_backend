@@ -16,21 +16,21 @@ def get_user(scope):
     from rest_framework_simplejwt.authentication import JWTAuthentication
     from rest_framework_simplejwt.exceptions import InvalidToken, TokenError
 
-    if 'query_params' not in scope:
+    if "query_params" not in scope:
         raise ValueError(
-            'Cannot find query_params in scope. You should wrap your consumer in '
-            'QueryParamsMiddleware.'
+            "Cannot find query_params in scope. You should wrap your consumer in "
+            "QueryParamsMiddleware."
         )
 
     try:
         # Re-use authentication class from simplejwt to validate the token.
         jwt_auth = JWTAuthentication()
 
-        raw_token = scope['query_params']['access_token'][0]
+        raw_token = scope["query_params"]["access_token"][0]
         validated_token = jwt_auth.get_validated_token(raw_token=raw_token)
         user = jwt_auth.get_user(validated_token)
 
-    except (KeyError, InvalidToken, TokenError):
+    except KeyError, InvalidToken, TokenError:
         user = None
 
     return user or AnonymousUser()
@@ -47,11 +47,11 @@ class QueryParamsMiddleware:
 
     async def __call__(self, scope, receive, send):
         # Parse query string
-        query_string = scope.get('query_string', b'').decode()
+        query_string = scope.get("query_string", b"").decode()
         query_params = parse_qs(query_string)
 
         # Add query_params to scope
-        scope['query_params'] = query_params
+        scope["query_params"] = query_params
 
         # Return inner application
         return await self.inner(scope, receive, send)
@@ -65,17 +65,18 @@ class JWTAuthMiddleware(AuthMiddleware):
 
     def populate_scope(self, scope):
         # Make sure we have query_params in the scope
-        if 'query_params' not in scope:
+        if "query_params" not in scope:
             raise ValueError(
-                'JWTAuthMiddleware cannot find query_params in scope. '
-                'QueryParamsMiddleware must be above it.'
+                "JWTAuthMiddleware cannot find query_params in scope. "
+                "QueryParamsMiddleware must be above it."
             )
-        if 'user' not in scope:
-            scope['user'] = UserLazyObject()
+        if "user" not in scope:
+            scope["user"] = UserLazyObject()
 
     async def resolve_scope(self, scope):
         # noinspection PyProtectedMember
-        scope['user']._wrapped = await get_user(scope)
+        scope["user"]._wrapped = await get_user(scope)
 
 
-JWTAuthMiddlewareStack = lambda inner: QueryParamsMiddleware(JWTAuthMiddleware(inner))
+def JWTAuthMiddlewareStack(inner):
+    return QueryParamsMiddleware(JWTAuthMiddleware(inner))

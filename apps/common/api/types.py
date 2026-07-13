@@ -1,4 +1,4 @@
-from typing import Any, Dict
+from typing import Any
 
 # Type alias for response data containing status information
-ResponseData = Dict[str, Any]
+ResponseData = dict[str, Any]

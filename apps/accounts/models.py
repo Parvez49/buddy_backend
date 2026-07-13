@@ -9,9 +9,7 @@ from apps.common.models import UUIDTimeStampedModel
 class User(UUIDTimeStampedModel, AbstractBaseUser, PermissionsMixin):
     first_name = models.CharField(verbose_name=_("First Name"), max_length=150)
     last_name = models.CharField(verbose_name=_("Last Name"), max_length=150)
-    email = models.EmailField(
-        verbose_name=_("Email Address"), unique=True, db_index=True
-    )
+    email = models.EmailField(verbose_name=_("Email Address"), unique=True, db_index=True)
 
     is_active = models.BooleanField(default=True)
     is_staff = models.BooleanField(default=False)

@@ -24,9 +24,7 @@ def verify_google_id_token(*, id_token: str) -> dict:
             id_token, google_requests.Request(), audience=None
         )
     except (ValueError, GoogleAuthError) as exc:
-        raise serializers.ValidationError(
-            _("Invalid or expired Google token.")
-        ) from exc
+        raise serializers.ValidationError(_("Invalid or expired Google token.")) from exc
 
     if claims.get("iss") not in _VALID_ISSUERS:
         raise serializers.ValidationError(_("Invalid Google token issuer."))

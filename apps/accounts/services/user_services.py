@@ -32,11 +32,7 @@ def _create_user(
         )
     except IntegrityError as exc:
         raise serializers.ValidationError(
-            {
-                "email": [
-                    ErrorDetail("A user with this email already exists.", code="unique")
-                ]
-            }
+            {"email": [ErrorDetail("A user with this email already exists.", code="unique")]}
         ) from exc
 
 
@@ -51,9 +47,7 @@ def user_create(*, email: str, password: str, first_name: str, last_name: str) -
     )
 
 
-def user_create_superuser(
-    *, email: str, password: str, first_name: str, last_name: str
-) -> User:
+def user_create_superuser(*, email: str, password: str, first_name: str, last_name: str) -> User:
     """Create a superuser account with a hashed password."""
     return _create_user(
         manager_method=User.objects.create_superuser,

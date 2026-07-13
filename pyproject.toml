@@ -42,4 +42,96 @@ dev = [
     "detect-secrets>=1.5.0",
     "pre-commit>=4.6.0",
     "django-debug-toolbar>=7.0.0",
+    "pip-audit>=2.7.0",
 ]
+
+# ─────────────────────────────────────────────────────────────────
+# Ruff — lint + format
+# ─────────────────────────────────────────────────────────────────
+[tool.ruff]
+target-version = "py314"
+line-length = 100
+extend-exclude = ["migrations"]
+
+[tool.ruff.lint]
+select = [
+    "E",   # pycodestyle errors
+    "F",   # pyflakes
+    "I",   # isort
+    "UP",  # pyupgrade
+    "B",   # flake8-bugbear
+    "C4",  # flake8-comprehensions
+    "DJ",  # flake8-django
+    "SIM", # flake8-simplify
+]
+ignore = [
+    "DJ001", # nullable CharField/TextField — too many legitimate uses to blanket-forbid
+]
+
+[tool.ruff.lint.per-file-ignores]
+# Django's own settings-layering idiom (`from .base import *`) is intentional
+# here, not an oversight — see config/settings/{local,staging,production}.py.
+"config/settings/local.py" = ["F403", "F405"]
+"config/settings/staging.py" = ["F403", "F405"]
+"config/settings/production.py" = ["F403", "F405"]
+
+[tool.ruff.lint.isort]
+known-first-party = ["apps", "config"]
+
+[tool.ruff.format]
+quote-style = "double"
+docstring-code-format = true
+
+# ─────────────────────────────────────────────────────────────────
+# mypy — static type checking
+# ─────────────────────────────────────────────────────────────────
+[tool.mypy]
+python_version = "3.14"
+plugins = ["mypy_django_plugin.main"]
+mypy_path = "."
+namespace_packages = true
+explicit_package_bases = true
+check_untyped_defs = true
+warn_unused_ignores = true
+warn_redundant_casts = true
+ignore_missing_imports = true
+exclude = ["^.*/migrations/.*$"]
+
+[[tool.mypy.overrides]]
+module = "*.migrations.*"
+ignore_errors = true
+
+[tool.django-stubs]
+django_settings_module = "config.settings.local"
+
+# ─────────────────────────────────────────────────────────────────
+# pytest — test runner
+# ─────────────────────────────────────────────────────────────────
+[tool.pytest.ini_options]
+DJANGO_SETTINGS_MODULE = "config.settings.local"
+python_files = ["test_*.py", "*_test.py"]
+addopts = "--reuse-db"
+
+# ─────────────────────────────────────────────────────────────────
+# coverage — enforced via pytest-cov in CI (see .github/workflows/ci.yml)
+# ─────────────────────────────────────────────────────────────────
+[tool.coverage.run]
+source = ["apps"]
+branch = true
+omit = ["*/migrations/*", "*/tests/*", "*/__init__.py", "manage.py"]
+
+[tool.coverage.report]
+fail_under = 85
+show_missing = true
+skip_covered = false
+exclude_lines = [
+    "pragma: no cover",
+    "raise NotImplementedError",
+    "if TYPE_CHECKING:",
+]
+
+# ─────────────────────────────────────────────────────────────────
+# bandit — scans OUR source for insecure patterns (not dependencies — see pip-audit)
+# ─────────────────────────────────────────────────────────────────
+[tool.bandit]
+exclude_dirs = [".venv", "migrations", "tests"]

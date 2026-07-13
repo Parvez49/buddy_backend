@@ -8,9 +8,7 @@ if TYPE_CHECKING:
 
 
 class UserManager(BaseUserManager):
-    def create_user(
-        self, email: str, password: str | None = None, **extra_fields
-    ) -> "User":
+    def create_user(self, email: str, password: str | None = None, **extra_fields) -> User:
         if not email:
             raise ValueError(_("Users must have an email address"))
         # normalize_email() only lowercases the domain part; citext isn't in
@@ -22,9 +20,7 @@ class UserManager(BaseUserManager):
         user.save(using=self._db)
         return user
 
-    def create_superuser(
-        self, email: str, password: str | None = None, **extra_fields
-    ) -> "User":
+    def create_superuser(self, email: str, password: str | None = None, **extra_fields) -> User:
         extra_fields.setdefault("is_staff", True)
         extra_fields.setdefault("is_superuser", True)
         extra_fields.setdefault("is_active", True)

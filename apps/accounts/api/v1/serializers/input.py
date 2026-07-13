@@ -26,9 +26,7 @@ class RegisterInputSerializer(serializers.Serializer):
 
     def validate_email(self, value: str) -> str:
         if get_user_by_email(email=value) is not None:
-            raise serializers.ValidationError(
-                _("A user with this email already exists.")
-            )
+            raise serializers.ValidationError(_("A user with this email already exists."))
         return value
 
     def validate_password(self, value: str) -> str:
@@ -49,9 +47,7 @@ class LoginInputSerializer(serializers.Serializer):
             password=attrs["password"],
         )
         if not user:
-            raise serializers.ValidationError(
-                _("Invalid email or password."), code="authorization"
-            )
+            raise serializers.ValidationError(_("Invalid email or password."), code="authorization")
         if not user.is_active:
             raise serializers.ValidationError(
                 _("This account has been disabled."), code="authorization"
@@ -79,8 +75,8 @@ class LogoutInputSerializer(serializers.Serializer):
     def validate_refresh(self, value: str) -> str:
         try:
             RefreshToken(value)
-        except TokenError:
-            raise serializers.ValidationError(_("Invalid or expired refresh token."))
+        except TokenError as exc:
+            raise serializers.ValidationError(_("Invalid or expired refresh token.")) from exc
         return value
 
     def save(self, **kwargs) -> None:

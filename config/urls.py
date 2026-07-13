@@ -25,6 +25,7 @@ api_url_patterns = (
     [
         path("", include("apps.accounts.api.urls")),
         path("", include("apps.posts.api.urls")),
+        path("", include("apps.comments.api.urls")),
     ],
     "api",
 )

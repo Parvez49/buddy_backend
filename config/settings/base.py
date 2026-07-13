@@ -39,6 +39,7 @@ INSTALLED_APPS = [
     "apps.accounts",
     "apps.common",
     "apps.posts",
+    "apps.comments",
 ]
 
 # https://docs.djangoproject.com/en/dev/ref/settings/#middleware

@@ -60,6 +60,17 @@ class LoginInputSerializer(serializers.Serializer):
         return attrs
 
 
+class GoogleAuthInputSerializer(serializers.Serializer):
+    """Validates that an id_token was sent.
+
+    Deliberately doesn't verify the token itself — that's an external call
+    to Google's servers, which belongs in the service layer
+    (google_auth_services.verify_google_id_token), not in a serializer.
+    """
+
+    id_token = serializers.CharField()
+
+
 class LogoutInputSerializer(serializers.Serializer):
     """Validates and blacklists a refresh token."""
 

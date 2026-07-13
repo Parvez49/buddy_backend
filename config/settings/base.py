@@ -255,3 +255,9 @@ SPECTACULAR_SETTINGS = {
 }
 
 FRONTEND_URL = env("FRONTEND_URL", default="http://localhost:3000")
+
+# https://developers.google.com/identity/gsi/web/guides/verify-google-id-token
+# Client IDs (web + mobile, as needed) allowed as the `aud` claim on a
+# Google ID token. Unset/empty means every Google sign-in attempt is
+# rejected at the audience check — safe default, not a hard failure.
+GOOGLE_OAUTH_CLIENT_IDS = env.list("GOOGLE_OAUTH_CLIENT_IDS", default=[])

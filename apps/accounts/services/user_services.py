@@ -5,13 +5,14 @@ from rest_framework import serializers
 from rest_framework.exceptions import ErrorDetail
 
 from apps.accounts.models import User
+from apps.accounts.selectors.user_selectors import get_user_by_email
 
 
 def _create_user(
     *,
     manager_method: Callable[..., User],
     email: str,
-    password: str,
+    password: str | None,
     first_name: str,
     last_name: str,
 ) -> User:
@@ -61,6 +62,34 @@ def user_create_superuser(
         first_name=first_name,
         last_name=last_name,
     )
+
+
+def user_get_or_create_from_google(
+    *, email: str, first_name: str, last_name: str
+) -> tuple[User, bool]:
+    """Get the user for a Google-verified email, or create one on first sign-in.
+
+    The email is already confirmed by Google before this is called (see
+    google_auth_services.verify_google_id_token), so linking by email is
+    safe even if the account was originally created with a password —
+    Google's own verification is the trust anchor, not ours.
+    """
+    user = get_user_by_email(email=email)
+    if user is not None:
+        if not user.is_active:
+            raise serializers.ValidationError(
+                {"non_field_errors": ["This account has been disabled."]}
+            )
+        return user, False
+
+    user = _create_user(
+        manager_method=User.objects.create_user,
+        email=email,
+        password=None,  # set_password(None) -> set_unusable_password(): Google-only account
+        first_name=first_name,
+        last_name=last_name,
+    )
+    return user, True
 
 
 def user_update(*, user: User, **fields: str) -> User:

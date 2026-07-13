@@ -24,6 +24,7 @@ from drf_spectacular.views import SpectacularAPIView, SpectacularSwaggerView
 api_url_patterns = (
     [
         path("", include("apps.accounts.api.urls")),
+        path("", include("apps.posts.api.urls")),
     ],
     "api",
 )

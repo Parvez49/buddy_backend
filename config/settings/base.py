@@ -38,6 +38,7 @@ INSTALLED_APPS = [
     # Local Apps
     "apps.accounts",
     "apps.common",
+    "apps.posts",
 ]
 
 # https://docs.djangoproject.com/en/dev/ref/settings/#middleware
@@ -139,6 +140,10 @@ STATIC_URL = "/static/"
 
 MEDIA_ROOT = str(BASE_DIR / "media")
 MEDIA_URL = "/media/"
+
+# https://docs.djangoproject.com/en/dev/ref/files/uploads/
+MAX_IMAGE_UPLOAD_SIZE_MB = env.int("MAX_IMAGE_UPLOAD_SIZE_MB", default=5)
+MAX_VIDEO_UPLOAD_SIZE_MB = env.int("MAX_VIDEO_UPLOAD_SIZE_MB", default=50)
 
 # https://docs.djangoproject.com/en/dev/ref/settings/#site-id
 SITE_ID = 1

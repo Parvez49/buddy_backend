@@ -10,7 +10,7 @@ from apps.accounts.services.user_services import user_create, user_create_superu
 
 # Only ever used as a fallback, and only when DEBUG=True (see _resolve_password).
 # Not a real credential — nosec: bandit B105 (hardcoded_password_string).
-_DEV_FALLBACK_PASSWORD = "dev-only-changeme"  # nosec B105
+_DEV_FALLBACK_PASSWORD = "password"  # nosec B105
 
 DEFAULT_ACCOUNTS = (
     {

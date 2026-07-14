@@ -21,8 +21,11 @@ class Comment(UUIDTimeStampedModel):
     text = models.TextField()
 
     # Denormalized — maintained via F() inside the same transaction as the
-    # underlying like/reply insert. Never read via COUNT(*).
+    # underlying reaction/reply insert. Never read via COUNT(*). A user
+    # holds at most one reaction (like/dislike, see apps.reactions), so
+    # these two never both move for the same event.
     likes_count = models.PositiveIntegerField(default=0)
+    dislikes_count = models.PositiveIntegerField(default=0)
     replies_count = models.PositiveIntegerField(default=0)
 
     class Meta(UUIDTimeStampedModel.Meta):

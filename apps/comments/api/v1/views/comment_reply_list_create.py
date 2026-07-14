@@ -29,7 +29,7 @@ class CommentReplyListCreateAPIView(ListCreateAPIView):
         return comment
 
     def get_queryset(self):
-        return get_comment_replies(comment=self.get_parent_comment())
+        return get_comment_replies(comment=self.get_parent_comment(), user=self.request.user)
 
     def get_serializer_class(self):
         if self.request.method == "POST":

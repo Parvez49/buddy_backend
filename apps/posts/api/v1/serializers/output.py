@@ -37,6 +37,11 @@ class PostOutputSerializer(serializers.ModelSerializer):
 
     author = PostAuthorOutputSerializer(read_only=True)
     media = PostMediaOutputSerializer(many=True, read_only=True)
+    # A Subquery() annotation from get_feed_posts/get_post_for_user, not a
+    # model field — "like"/"dislike"/None, default=None covers instances
+    # that didn't go through one of those selectors (e.g. the object
+    # post_create() just made).
+    my_reaction = serializers.CharField(read_only=True, default=None, allow_null=True)
 
     class Meta:
         model = Post
@@ -47,7 +52,9 @@ class PostOutputSerializer(serializers.ModelSerializer):
             "media",
             "visibility",
             "likes_count",
+            "dislikes_count",
             "comments_count",
+            "my_reaction",
             "edited_at",
             "created_at",
             "updated_at",

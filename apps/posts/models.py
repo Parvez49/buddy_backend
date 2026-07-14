@@ -19,8 +19,11 @@ class Post(UUIDTimeStampedModel):
     edited_at = models.DateTimeField(null=True, blank=True)
 
     # Denormalized — maintained via F() inside the same transaction as the
-    # underlying like/comment.
+    # underlying reaction/comment. A user holds at most one reaction
+    # (like/dislike, see apps.reactions), so these two never both move for
+    # the same event — see reaction_services.post_react().
     likes_count = models.PositiveIntegerField(default=0)
+    dislikes_count = models.PositiveIntegerField(default=0)
     comments_count = models.PositiveIntegerField(default=0)
 
     class Meta(UUIDTimeStampedModel.Meta):

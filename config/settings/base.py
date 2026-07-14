@@ -40,7 +40,7 @@ INSTALLED_APPS = [
     "apps.common",
     "apps.posts",
     "apps.comments",
-    "apps.likes",
+    "apps.reactions",
 ]
 
 # https://docs.djangoproject.com/en/dev/ref/settings/#middleware

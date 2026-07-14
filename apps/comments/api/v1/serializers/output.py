@@ -18,6 +18,11 @@ class CommentOutputSerializer(serializers.ModelSerializer):
     """
 
     author = CommentAuthorOutputSerializer(read_only=True)
+    # A Subquery() annotation from the comment selectors, not a model field —
+    # "like"/"dislike"/None, default=None covers instances that didn't go
+    # through one of those selectors (e.g. the object
+    # comment_create()/comment_update() just made).
+    my_reaction = serializers.CharField(read_only=True, default=None, allow_null=True)
 
     class Meta:
         model = Comment
@@ -28,7 +33,9 @@ class CommentOutputSerializer(serializers.ModelSerializer):
             "author",
             "text",
             "likes_count",
+            "dislikes_count",
             "replies_count",
+            "my_reaction",
             "created_at",
             "updated_at",
         )

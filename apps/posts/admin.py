@@ -11,8 +11,23 @@ class PostMediaInline(admin.TabularInline):
 
 @admin.register(Post)
 class PostAdmin(admin.ModelAdmin):
-    list_display = ("id", "author", "visibility", "likes_count", "comments_count", "created_at")
+    list_display = (
+        "id",
+        "author",
+        "visibility",
+        "likes_count",
+        "dislikes_count",
+        "comments_count",
+        "created_at",
+    )
     list_filter = ("visibility",)
     search_fields = ("text", "author__email")
-    readonly_fields = ("likes_count", "comments_count", "edited_at", "created_at", "updated_at")
+    readonly_fields = (
+        "likes_count",
+        "dislikes_count",
+        "comments_count",
+        "edited_at",
+        "created_at",
+        "updated_at",
+    )
     inlines = [PostMediaInline]

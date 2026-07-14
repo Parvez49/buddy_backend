@@ -30,7 +30,7 @@ class CommentListCreateAPIView(ListCreateAPIView):
         return post
 
     def get_queryset(self):
-        return get_post_comments(post=self.get_post())
+        return get_post_comments(post=self.get_post(), user=self.request.user)
 
     def get_serializer_class(self):
         if self.request.method == "POST":

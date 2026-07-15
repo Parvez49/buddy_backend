@@ -253,6 +253,9 @@ SPECTACULAR_SETTINGS = {
     "VERSION": "1.0.0",
     # 'SCHEMA_PATH_PREFIX': '/api/v[0-9]',
     "COMPONENT_SPLIT_REQUEST": True,
+    # Every response is wrapped by EnvelopeJSONRenderer before it reaches the
+    # client — without this hook the schema documents the unwrapped body.
+    "POSTPROCESSING_HOOKS": ["apps.common.api.schema.envelope_postprocessing_hook"],
 }
 
 FRONTEND_URL = env("FRONTEND_URL", default="http://localhost:3000")

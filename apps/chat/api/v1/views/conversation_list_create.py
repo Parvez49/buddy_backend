@@ -10,7 +10,7 @@ from apps.chat.api.v1.serializers import (
 )
 from apps.chat.selectors.chat_selectors import get_conversations
 from apps.chat.services.chat_services import get_or_create_conversation
-from apps.common.api.pagination import FeedCursorPagination
+from apps.common.api.pagination import ConversationCursorPagination
 
 
 class ConversationListCreateAPIView(ListCreateAPIView):
@@ -20,7 +20,7 @@ class ConversationListCreateAPIView(ListCreateAPIView):
     201-first-time/200-if-exists shape as `PostReactionAPIView`.
     """
 
-    pagination_class = FeedCursorPagination
+    pagination_class = ConversationCursorPagination
 
     def get_queryset(self):
         return get_conversations(user=self.request.user)

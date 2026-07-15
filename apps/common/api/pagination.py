@@ -32,3 +32,13 @@ class ReplyCursorPagination(CursorPagination):
     page_size = 20
     max_page_size = 100
     ordering = ("created_at", "id")
+
+
+class ConversationCursorPagination(CursorPagination):
+    """Cursor pagination for the chat inbox — most recently *active*
+    conversation first, not most recently *created*.
+    """
+
+    page_size = 20
+    max_page_size = 100
+    ordering = ("-last_message_at", "-id")

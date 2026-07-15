@@ -6,6 +6,11 @@ x-django-env: &django-env
   # Own logical DB, same reasoning as CELERY_BROKER_URL vs CACHES — keeps
   # channel-layer group/pubsub keys out of the cache's keyspace.
   CHANNEL_REDIS_URL: redis://redis:6379/2
+  # ${...} here is Compose's own interpolation (sourced from --env-file),
+  # not .env-file expansion — this is the one place PUBLIC_APP_ORIGIN
+  # actually needs to fan out to.
+  CORS_ALLOWED_ORIGINS: ${PUBLIC_APP_ORIGIN:-http://localhost}
+  FRONTEND_URL: ${PUBLIC_APP_ORIGIN:-http://localhost}
 
 services:
   db:
@@ -102,6 +107,22 @@ services:
       web:
         condition: service_healthy
 
+  frontend:
+    build:
+      # Sibling checkout — see README "Docker (staging)" for the expected
+      # ../buddy_frontend layout on the VPS.
+      context: ../buddy_frontend
+      args:
+        # NEXT_PUBLIC_* are inlined into the client bundle at build time —
+        # must be the URL the *browser* will use (through nginx), never an
+        # internal service name like http://web:8000.
+        NEXT_PUBLIC_API_URL: ${PUBLIC_APP_ORIGIN:?set PUBLIC_APP_ORIGIN in .env.staging}/api/v1
+        NEXT_PUBLIC_GOOGLE_CLIENT_ID: ${NEXT_PUBLIC_GOOGLE_CLIENT_ID:-}
+    restart: unless-stopped
+    depends_on:
+      web:
+        condition: service_healthy
+
   nginx:
     image: nginx:1.27-alpine
     restart: unless-stopped
@@ -116,6 +137,8 @@ services:
         condition: service_healthy
       websocket:
         condition: service_healthy
+      frontend:
+        condition: service_started
 
 volumes:
   postgres_data:

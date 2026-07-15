@@ -4,7 +4,7 @@ from .input import (
     LogoutInputSerializer,
     RegisterInputSerializer,
 )
-from .output import TokenPairOutputSerializer, UserOutputSerializer
+from .output import TokenPairOutputSerializer, UserListOutputSerializer, UserOutputSerializer
 
 __all__ = [
     "RegisterInputSerializer",
@@ -12,5 +12,6 @@ __all__ = [
     "LogoutInputSerializer",
     "GoogleAuthInputSerializer",
     "UserOutputSerializer",
+    "UserListOutputSerializer",
     "TokenPairOutputSerializer",
 ]

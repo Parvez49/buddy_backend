@@ -3,6 +3,8 @@ from django.db.models import F
 
 from apps.accounts.models import User
 from apps.comments.models import Comment
+from apps.notifications.choices import NotificationType
+from apps.notifications.services.notification_services import notification_create
 from apps.posts.models import Post
 from apps.reactions.choices import ReactionType
 from apps.reactions.models import CommentReaction, PostReaction
@@ -33,6 +35,14 @@ def post_react(*, user: User, post: Post, reaction_type: str) -> tuple[PostReact
     if created:
         Post.objects.filter(pk=post.pk).update(
             **{_COUNTER_FIELD[reaction_type]: F(_COUNTER_FIELD[reaction_type]) + 1}
+        )
+        # Only on first react, not a type switch — one notification per
+        # reactor per post, not one per like<->dislike flip.
+        notification_create(
+            recipient=post.author,
+            actor=user,
+            notification_type=NotificationType.POST_REACTION,
+            post=post,
         )
     elif reaction.reaction_type != reaction_type:
         old_type = reaction.reaction_type
@@ -74,6 +84,12 @@ def comment_react(
     if created:
         Comment.objects.filter(pk=comment.pk).update(
             **{_COUNTER_FIELD[reaction_type]: F(_COUNTER_FIELD[reaction_type]) + 1}
+        )
+        notification_create(
+            recipient=comment.author,
+            actor=user,
+            notification_type=NotificationType.COMMENT_REACTION,
+            comment=comment,
         )
     elif reaction.reaction_type != reaction_type:
         old_type = reaction.reaction_type

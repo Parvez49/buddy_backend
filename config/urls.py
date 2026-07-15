@@ -33,6 +33,7 @@ api_url_patterns = (
         path("", include("apps.posts.api.urls")),
         path("", include("apps.comments.api.urls")),
         path("", include("apps.reactions.api.urls")),
+        path("", include("apps.notifications.api.urls")),
     ],
     "api",
 )

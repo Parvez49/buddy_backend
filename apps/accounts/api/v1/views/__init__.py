@@ -4,6 +4,7 @@ from .logout import LogoutAPIView
 from .me import CurrentUserAPIView
 from .register import RegisterAPIView
 from .token import TokenRefreshAPIView
+from .user_list import UserListAPIView
 
 __all__ = [
     "RegisterAPIView",
@@ -12,4 +13,5 @@ __all__ = [
     "GoogleAuthAPIView",
     "TokenRefreshAPIView",
     "CurrentUserAPIView",
+    "UserListAPIView",
 ]

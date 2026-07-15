@@ -7,6 +7,7 @@ from apps.accounts.api.v1.views import (
     LogoutAPIView,
     RegisterAPIView,
     TokenRefreshAPIView,
+    UserListAPIView,
 )
 
 app_name = "v1"
@@ -18,4 +19,5 @@ urlpatterns = [
     path("auth/logout/", LogoutAPIView.as_view(), name="logout"),
     path("auth/token/refresh/", TokenRefreshAPIView.as_view(), name="token-refresh"),
     path("auth/me/", CurrentUserAPIView.as_view(), name="me"),
+    path("users/", UserListAPIView.as_view(), name="user-list"),
 ]

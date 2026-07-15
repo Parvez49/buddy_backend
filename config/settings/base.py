@@ -18,6 +18,9 @@ DEBUG = env.bool("DJANGO_DEBUG", False)
 
 # https://docs.djangoproject.com/en/dev/ref/settings/#installed-apps
 INSTALLED_APPS = [
+    # Must precede django.contrib.staticfiles so `runserver` picks up
+    # Channels' own dev server (websocket support) instead of Django's.
+    "channels",
     # Django apps
     "django.contrib.admin",
     "django.contrib.auth",
@@ -41,6 +44,7 @@ INSTALLED_APPS = [
     "apps.posts",
     "apps.comments",
     "apps.reactions",
+    "apps.notifications",
 ]
 
 # https://docs.djangoproject.com/en/dev/ref/settings/#middleware
@@ -132,6 +136,22 @@ CACHES = {
         "LOCATION": env("REDIS_URL", default="redis://127.0.0.1:6379/0"),
         "OPTIONS": {
             "CLIENT_CLASS": "django_redis.client.DefaultClient",
+        },
+    }
+}
+
+# https://channels.readthedocs.io/en/latest/topics/channel_layers.html
+# Backs apps.notifications' real-time push (config/routing.py, config/middleware.py).
+CHANNEL_LAYERS = {
+    "default": {
+        "BACKEND": "channels_redis.core.RedisChannelLayer",
+        "CONFIG": {
+            "hosts": [
+                env(
+                    "CHANNEL_REDIS_URL",
+                    default=env("REDIS_URL", default="redis://127.0.0.1:6379/0"),
+                )
+            ],
         },
     }
 }

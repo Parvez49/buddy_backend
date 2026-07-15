@@ -21,6 +21,9 @@ class User(UUIDTimeStampedModel, AbstractBaseUser, PermissionsMixin):
         verbose_name=_("Avatar"), upload_to="accounts/avatars/", null=True, blank=True
     )
 
+    # e.g. "CEO of Apple" — no profile-edit endpoint yet, settable via /admin/.
+    designation = models.CharField(verbose_name=_("Designation"), max_length=150, blank=True, default="")
+
     objects = UserManager()
 
     USERNAME_FIELD = "email"

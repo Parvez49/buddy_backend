@@ -5,6 +5,8 @@ from rest_framework import serializers
 from apps.accounts.models import User
 from apps.comments.constants import MAX_COMMENT_DEPTH
 from apps.comments.models import Comment
+from apps.notifications.choices import NotificationType
+from apps.notifications.services.notification_services import notification_create
 from apps.posts.models import Post
 
 _MUTABLE_FIELDS = {"text"}
@@ -58,8 +60,20 @@ def comment_create(
 
     if parent is None:
         Post.objects.filter(pk=post.pk).update(comments_count=F("comments_count") + 1)
+        notification_create(
+            recipient=post.author,
+            actor=author,
+            notification_type=NotificationType.COMMENT,
+            comment=comment,
+        )
     else:
         Comment.objects.filter(pk=parent.pk).update(replies_count=F("replies_count") + 1)
+        notification_create(
+            recipient=parent.author,
+            actor=author,
+            notification_type=NotificationType.REPLY,
+            comment=comment,
+        )
 
     return comment
 

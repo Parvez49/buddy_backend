@@ -11,6 +11,7 @@ class PostAuthorOutputSerializer(serializers.Serializer):
 
     id = serializers.UUIDField(read_only=True)
     full_name = serializers.CharField(read_only=True)
+    avatar = serializers.ImageField(read_only=True)
 
 
 class PostMediaOutputSerializer(serializers.ModelSerializer):

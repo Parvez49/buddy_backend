@@ -14,6 +14,13 @@ class User(UUIDTimeStampedModel, AbstractBaseUser, PermissionsMixin):
     is_active = models.BooleanField(default=True)
     is_staff = models.BooleanField(default=False)
 
+    # No upload endpoint yet — settable via /admin/ in the meantime. Output
+    # serializers expose it as a nullable relative URL, same pattern as
+    # apps.posts.PostMedia (see apps/accounts/api/v1/serializers/output.py).
+    avatar = models.ImageField(
+        verbose_name=_("Avatar"), upload_to="accounts/avatars/", null=True, blank=True
+    )
+
     objects = UserManager()
 
     USERNAME_FIELD = "email"

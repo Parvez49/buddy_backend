@@ -7,6 +7,7 @@ from rest_framework_simplejwt.tokens import RefreshToken
 
 from apps.accounts.selectors.user_selectors import get_user_by_email
 from apps.common.api.fields import PasswordField
+from apps.posts.validators.image_validators import sniff_image_format, validate_image_file
 
 
 class RegisterInputSerializer(serializers.Serializer):
@@ -65,6 +66,25 @@ class GoogleAuthInputSerializer(serializers.Serializer):
     """
 
     id_token = serializers.CharField()
+
+
+class ProfileUpdateInputSerializer(serializers.Serializer):
+    """Validates a partial update to the caller's own profile — all fields
+    optional, only the ones sent are changed (see views.me / user_update).
+    """
+
+    first_name = serializers.CharField(max_length=150, required=False)
+    last_name = serializers.CharField(max_length=150, required=False)
+    designation = serializers.CharField(max_length=150, required=False, allow_blank=True)
+    avatar = serializers.ImageField(required=False)
+
+    def validate_avatar(self, value):
+        # Reuses apps.posts' image validators (content-sniffed format +
+        # size/corruption check) rather than duplicating that logic here.
+        if sniff_image_format(value) is None:
+            raise serializers.ValidationError(_("Upload a valid image file (JPEG, PNG, WEBP, or GIF)."))
+        validate_image_file(value)
+        return value
 
 
 class LogoutInputSerializer(serializers.Serializer):

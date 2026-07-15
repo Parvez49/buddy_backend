@@ -1,5 +1,6 @@
 from collections.abc import Callable
 
+from django.core.files.uploadedfile import UploadedFile
 from django.db import IntegrityError
 from rest_framework import serializers
 from rest_framework.exceptions import ErrorDetail
@@ -86,9 +87,9 @@ def user_get_or_create_from_google(
     return user, True
 
 
-def user_update(*, user: User, **fields: str) -> User:
+def user_update(*, user: User, **fields: str | UploadedFile) -> User:
     """Update mutable profile fields on an existing user."""
-    allowed_fields = {"first_name", "last_name"}
+    allowed_fields = {"first_name", "last_name", "designation", "avatar"}
     unknown_fields = set(fields) - allowed_fields
     if unknown_fields:
         raise ValueError(f"Cannot update fields: {sorted(unknown_fields)}")

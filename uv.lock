@@ -176,6 +176,7 @@ dependencies = [
     { name = "pillow" },
     { name = "psycopg", extra = ["binary"] },
     { name = "python-json-logger" },
+    { name = "requests" },
     { name = "structlog" },
 ]
 
@@ -218,6 +219,7 @@ requires-dist = [
     { name = "pillow", specifier = ">=12.3.0" },
     { name = "psycopg", extras = ["binary"], specifier = ">=3.3.4" },
     { name = "python-json-logger", specifier = ">=3.2.0" },
+    { name = "requests", specifier = ">=2.34.2" },
     { name = "structlog", specifier = ">=25.1.0" },
 ]
 

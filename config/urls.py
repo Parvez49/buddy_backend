@@ -25,6 +25,8 @@ from drf_spectacular.views import (
     SpectacularSwaggerView,
 )
 
+from apps.common.api.health import LivenessAPIView, ReadinessAPIView
+
 api_url_patterns = (
     [
         path("", include("apps.accounts.api.urls")),
@@ -37,6 +39,9 @@ api_url_patterns = (
 
 urlpatterns = [
     path("admin/", admin.site.urls),
+    # health checks — polled by the container orchestrator, not versioned API
+    path("health/live/", LivenessAPIView.as_view(), name="health-live"),
+    path("health/ready/", ReadinessAPIView.as_view(), name="health-ready"),
     # api documentation
     path("api/schema/", SpectacularAPIView.as_view(api_version="v1"), name="schema"),
     path("api/docs/", SpectacularSwaggerView.as_view(url_name="schema"), name="swagger-ui"),

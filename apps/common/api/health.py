@@ -11,6 +11,11 @@ class LivenessAPIView(PublicAccessMixin, APIView):
     container orchestrator restarts the process if this stops responding.
     """
 
+    # Polled every ~10s by Docker/orchestrator healthchecks — the global
+    # AnonRateThrottle (100/hour) would throttle that within minutes and
+    # flip the container "unhealthy" on a 429, not an actual failure.
+    throttle_classes = []
+
     def get(self, request):
         return Response({"status": "ok"})
 
@@ -20,6 +25,8 @@ class ReadinessAPIView(PublicAccessMixin, APIView):
     dependencies a request actually needs. An orchestrator stops routing
     traffic here (without restarting the container) if this fails.
     """
+
+    throttle_classes = []
 
     def get(self, request):
         checks = {"database": self._check_database(), "cache": self._check_cache()}

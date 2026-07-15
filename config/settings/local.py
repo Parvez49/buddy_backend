@@ -1,5 +1,14 @@
 from .base import *
 
+# Must be first in INSTALLED_APPS (before django.contrib.staticfiles) so
+# `runserver` picks up Daphne's ASGI-aware dev server — otherwise it's
+# plain WSGI runserver and every websocket handshake fails with 1006.
+# `daphne` is a main dependency (the docker-compose `websocket` service
+# invokes it directly against config.asgi:application) — this hook is only
+# what makes *local* `runserver` use it too, so local dev doesn't need a
+# second process just to test a websocket.
+INSTALLED_APPS = ["daphne", *INSTALLED_APPS]
+
 # https://docs.djangoproject.com/en/dev/ref/settings/
 DEBUG = env.bool("DJANGO_DEBUG", True)
 SECRET_KEY = env("DJANGO_SECRET_KEY", default="my-secret-key")

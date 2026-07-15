@@ -18,8 +18,10 @@ DEBUG = env.bool("DJANGO_DEBUG", False)
 
 # https://docs.djangoproject.com/en/dev/ref/settings/#installed-apps
 INSTALLED_APPS = [
-    # Must precede django.contrib.staticfiles so `runserver` picks up
-    # Channels' own dev server (websocket support) instead of Django's.
+    # Provides channel layers, routing, consumers. Note: `channels` alone
+    # does NOT make `runserver` ASGI/websocket-aware — that override comes
+    # from the separate `daphne` app, added first in settings/local.py
+    # (it's a dev-only dependency; production runs a real ASGI server).
     "channels",
     # Django apps
     "django.contrib.admin",
@@ -45,6 +47,7 @@ INSTALLED_APPS = [
     "apps.comments",
     "apps.reactions",
     "apps.notifications",
+    "apps.chat",
 ]
 
 # https://docs.djangoproject.com/en/dev/ref/settings/#middleware

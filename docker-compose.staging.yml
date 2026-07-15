@@ -3,6 +3,9 @@ x-django-env: &django-env
   DATABASE_URL: postgres://${POSTGRES_USER:-buddy}:${POSTGRES_PASSWORD}@db:5432/${POSTGRES_DB:-buddy_db}
   REDIS_URL: redis://redis:6379/0
   CELERY_BROKER_URL: redis://redis:6379/1
+  # Own logical DB, same reasoning as CELERY_BROKER_URL vs CACHES — keeps
+  # channel-layer group/pubsub keys out of the cache's keyspace.
+  CHANNEL_REDIS_URL: redis://redis:6379/2
 
 services:
   db:
@@ -50,6 +53,25 @@ services:
       retries: 5
       start_period: 20s
 
+  websocket:
+    build: .
+    restart: unless-stopped
+    command: ["daphne", "-b", "0.0.0.0", "-p", "8001", "config.asgi:application"]
+    env_file: .env.staging
+    environment:
+      <<: *django-env
+    depends_on:
+      web:
+        condition: service_healthy
+    healthcheck:
+      # ProtocolTypeRouter routes "http" to the same Django app as gunicorn,
+      # so the liveness view is reachable over this port too.
+      test: ["CMD", "python", "-c", "import urllib.request as u; u.urlopen('http://127.0.0.1:8001/health/live/').status"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 20s
+
   celery_worker:
     build: .
     restart: unless-stopped
@@ -91,6 +113,8 @@ services:
       - media_volume:/app/media:ro
     depends_on:
       web:
+        condition: service_healthy
+      websocket:
         condition: service_healthy
 
 volumes:

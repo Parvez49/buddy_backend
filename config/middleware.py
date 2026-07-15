@@ -30,7 +30,7 @@ def get_user(scope):
         validated_token = jwt_auth.get_validated_token(raw_token=raw_token)
         user = jwt_auth.get_user(validated_token)
 
-    except KeyError, InvalidToken, TokenError:
+    except (KeyError, InvalidToken, TokenError):
         user = None
 
     return user or AnonymousUser()

@@ -25,6 +25,7 @@ dependencies = [
     "python-json-logger>=3.2.0",
     "google-auth>=2.35.0",
     "requests>=2.34.2",
+    "daphne>=4.2.2",
 ]
 
 [dependency-groups]
@@ -44,7 +45,6 @@ dev = [
     "pre-commit>=4.6.0",
     "django-debug-toolbar>=7.0.0",
     "pip-audit>=2.7.0",
-    "daphne>=4.2.2",
 ]
 
 # ─────────────────────────────────────────────────────────────────
